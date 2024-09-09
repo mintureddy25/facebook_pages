@@ -3,12 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@greatsumini/react-facebook-login": "^3.3.3",
+    "@headlessui/tailwindcss": "^0.2.1",
+    "@kazion/react-facebook-login": "^1.0.7",
+    "@tailwindcss/forms": "^0.5.9",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.45",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-facebook-login": "^4.1.1",
     "react-scripts": "5.0.1",
+    "react-social-login-buttons": "^4.1.0",
+    "reactjs-social-login": "^2.6.3",
+    "save": "^2.9.0",
+    "tailwindcss": "^3.4.10",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
@@ -34,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
   }
 }
