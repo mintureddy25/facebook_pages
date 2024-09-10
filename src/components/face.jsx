@@ -8,8 +8,12 @@ const Face = () => {
 
   const responseFacebook = (response) => {
     console.log(response);
+
+    
+
     // Handle response here (e.g., access token, user data)
   };
+
 
   return (
     <div>
