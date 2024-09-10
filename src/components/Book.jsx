@@ -13,7 +13,7 @@ const FacebookLoginButton = () => {
       js.onload = () => {
         window.fbAsyncInit = function() {
           window.FB.init({
-            appId      : '908299747781305', // Your Facebook App ID
+            appId      : '876951454364357', // Your Facebook App ID
             cookie     : true,
             xfbml      : true,
             version    : 'v20.0'
@@ -39,7 +39,7 @@ const FacebookLoginButton = () => {
             console.log('Good to see you, ' + response.name + '.');
           });
         } else {
-          console.log('User cancelled login or failed.');
+          console.log('User cancelled login or failed.'+response);
         }
       }, {scope: 'public_profile,email'});
     } else {
