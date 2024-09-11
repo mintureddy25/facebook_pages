@@ -41,7 +41,7 @@ const FacebookLoginButton = () => {
         } else {
           console.log('User cancelled login or failed.'+response);
         }
-      }, {scope: 'public_profile,email'});
+      }, {scope: 'public_profile,email,user_birthday'});
     } else {
       console.error('Facebook SDK is not loaded.');
     }
