@@ -13,7 +13,7 @@ const FacebookLoginButton = () => {
       js.onload = () => {
         window.fbAsyncInit = function() {
           window.FB.init({
-            appId      : '808097494545117', // Your Facebook App ID
+            appId      : '908299747781305', // Your Facebook App ID
             cookie     : true,
             xfbml      : true,
             version    : 'v20.0'
