@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import FacebookPagesList from './pages';
 
 const FacebookLoginButton = () => {
+  const [accessToken, setAccessToken] = useState(null);
+
   useEffect(() => {
     // Load the Facebook SDK
     (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) { return; }
+      let js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
       js = d.createElement(s); js.id = id;
       js.src = "https://connect.facebook.net/en_US/sdk.js";
       fjs.parentNode.insertBefore(js, fjs);
@@ -13,10 +16,10 @@ const FacebookLoginButton = () => {
       js.onload = () => {
         window.fbAsyncInit = function() {
           window.FB.init({
-            appId      : '908299747781305', // Your Facebook App ID
-            cookie     : true,
-            xfbml      : true,
-            version    : 'v20.0'
+            appId: '808097494545117', // Your Facebook App ID
+            cookie: true,
+            xfbml: true,
+            version: 'v20.0'
           });
           window.FB.AppEvents.logPageView();
         };
@@ -34,14 +37,16 @@ const FacebookLoginButton = () => {
     if (window.FB) {
       window.FB.login(response => {
         if (response.authResponse) {
-          console.log('Welcome!  Fetching your information.... ');
+          const { accessToken } = response.authResponse;
+          setAccessToken(accessToken); // Update the state with the access token
+          console.log('Welcome! Fetching your information.... ');
           window.FB.api('/me', function(response) {
             console.log('Good to see you, ' + response.name + '.');
           });
         } else {
-          console.log('User cancelled login or failed.'+response);
+          console.log('User cancelled login or failed: ' + response);
         }
-      }, {scope: 'public_profile,email,user_birthday'});
+      }, { scope: 'public_profile,email' });
     } else {
       console.error('Facebook SDK is not loaded.');
     }
@@ -50,6 +55,7 @@ const FacebookLoginButton = () => {
   return (
     <div>
       <button onClick={handleFBLogin}>Login with Facebook</button>
+      {accessToken && <FacebookPagesList accessToken={accessToken} />}
     </div>
   );
 };
