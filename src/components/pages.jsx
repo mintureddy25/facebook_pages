@@ -5,7 +5,7 @@ const FacebookPagesList = ({accessToken}) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const accessToken = accessToken; // Replace with your user access token
+     // Replace with your user access token
 
     const fetchPages = async () => {
       try {
