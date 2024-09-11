@@ -19,7 +19,7 @@ function Dashboard() {
       }
 
       const data = await response.json();
-      return data.data; // Extract the pages list from the response
+      return data.data; 
     } catch (error) {
       console.error("Error fetching Facebook pages", error);
       return [];

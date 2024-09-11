@@ -34,7 +34,7 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
           setEngagements(engagementData);
           setReactions(reactionsData);
           setError(null);
-          setDateError(null); // Clear any previous date errors
+          setDateError(null); 
         } else {
           setDateError('The "since" date cannot be greater than the "until" date.');
         }
@@ -97,7 +97,7 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
   }
 
   if (!isPageView) {
-    // Render something else when not in page view
+  
     return <div className="text-white text-center"></div>;
   }
 
@@ -114,7 +114,7 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
 
   return (
     <div className="bg-gray-900 py-24 sm:py-32 relative">
-      {/* Back Button */}
+    
       <button
         onClick={handleBackClick}
         className="absolute top-4 left-4 text-sm font-semibold leading-6 text-white flex items-center"
