@@ -33,10 +33,8 @@ export const fetchTotalFollowers = async (pageId, accessToken, since, until) => 
   };
 
 
-  // src/utils/helpers.js
-
 export const fetchTotalImpressions = async (pageId, accessToken, since, until) => {
-    const url = `https://graph.facebook.com/${pageId}/insights/page_impressions_unique?since=${since}&until=${until}&period=total_over_range&access_token=${accessToken}`;
+    const url = `https://graph.facebook.com/${pageId}/insights/page_impressions?since=${since}&until=${until}&period=total_over_range&access_token=${accessToken}`;
     
     try {
       const response = await fetch(url);
@@ -63,11 +61,35 @@ export const fetchTotalImpressions = async (pageId, accessToken, since, until) =
       }
   
       const data = await response.json();
+      
       return data;
     } catch (error) {
       throw new Error(`Error fetching total reactions: ${error.message}`);
     }
   };
+
+  export const countAllReactions = (data) => {
+    if (!data || !data.data || !Array.isArray(data.data) || data.data.length === 0) {
+      return 0;
+    }
+  
+    const reactions = data.data[0];
+  
+    if (!reactions.values || !Array.isArray(reactions.values) || reactions.values.length === 0) {
+      return 0;
+    }
+  
+    const reactionCounts = reactions.values[0].value;
+  
+    if (typeof reactionCounts === 'object') {
+      return Object.values(reactionCounts).reduce((total, count) => {
+        return total + (typeof count === 'number' ? count : 0);
+      }, 0);
+    }
+  
+    return 0;
+  };
+  
   
   
   

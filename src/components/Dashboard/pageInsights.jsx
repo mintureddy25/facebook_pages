@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { fetchPageEngagement, fetchTotalFollowers, fetchTotalImpressions, fetchTotalReactions } from '../../utils/helpers';
+import Alert from '../../utils/alert'; 
+import { countAllReactions, fetchPageEngagement, fetchTotalFollowers, fetchTotalImpressions, fetchTotalReactions } from '../../utils/helpers';
+import Loader from '../../utils/loader';
 
 const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) => {
   const [followers, setFollowers] = useState(null);
@@ -10,13 +12,13 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
   const [engagements, setEngagements] = useState(null);
   const [reactions, setReactions] = useState(null);
 
-  const [error, setError] = useState(null);
-  const [dateError, setDateError] = useState(null);
+  const [error, setError] = useState([]);
+  const [dateError, setDateError] = useState([]);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [isPageView, setIsPageView] = useState(true); 
+  const [isPageView, setIsPageView] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,13 +35,13 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
           setImpressions(impressionsData);
           setEngagements(engagementData);
           setReactions(reactionsData);
-          setError(null);
-          setDateError(null); 
+          setError([]);
+          setDateError([]);
         } else {
-          setDateError('The "since" date cannot be greater than the "until" date.');
+          setDateError(['The "since" date cannot be greater than the "until" date.']);
         }
       } catch (error) {
-        setError(error.message);
+        setError([error.message]);
         setFollowers(null);
         setImpressions(null);
         setEngagements(null);
@@ -53,23 +55,23 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
   const handleStartDateChange = (date) => {
     setStartDate(date);
     if (date && endDate && date > endDate) {
-      setDateError('The "since" date cannot be greater than the "until" date.');
+      setDateError(['The "since" date cannot be greater than the "until" date.']);
     } else {
-      setDateError(null);
+      setDateError([]);
     }
   };
 
   const handleEndDateChange = (date) => {
     setEndDate(date);
     if (startDate && date && startDate > date) {
-      setDateError('The "since" date cannot be greater than the "until" date.');
+      setDateError(['The "since" date cannot be greater than the "until" date.']);
     } else {
-      setDateError(null);
+      setDateError([]);
     }
   };
 
   const handleBackClick = () => {
-    setIsPageView(false); 
+    setIsPageView(false);
     setShowPageInsights(false);
   };
 
@@ -88,33 +90,39 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
     return 'No data available';
   };
 
-  if (error) {
-    return <div className="text-red-500 text-center">Error: {error}</div>;
-  }
-
-  if (dateError) {
-    return <div className="text-red-500 text-center">Error: {dateError}</div>;
-  }
+  const handleDismissAlert = () => {
+    setError([]);
+    setDateError([]);
+  };
 
   if (!isPageView) {
-  
     return <div className="text-white text-center"></div>;
   }
 
+  if (error.length > 0 || dateError.length > 0) {
+    return (
+      <>
+        <Alert errors={[...error, ...dateError]} onDismiss={handleDismissAlert} />
+        <Loader />
+      </>
+    );
+  }
+
   if (!followers || !impressions || !engagements || !reactions) {
-    return <div className="text-white text-center">Loading...</div>;
+    return <Loader />;
   }
 
   const stats = [
     { id: '1', name: 'Total Fans', value: getTotalValue(followers) },
     { id: '2', name: 'Total Impressions', value: getTotalValue(impressions) },
     { id: '3', name: 'Total Engagements', value: getTotalValue(engagements) },
-    { id: '4', name: 'Total Reactions', value: getTotalValue(reactions) }
+    { id: '4', name: 'Total Reactions', value: countAllReactions(reactions) }
   ];
+  
 
   return (
     <div className="bg-gray-900 py-24 sm:py-32 relative">
-    
+      {/* Back Button */}
       <button
         onClick={handleBackClick}
         className="absolute top-4 left-4 text-sm font-semibold leading-6 text-white flex items-center"
@@ -139,7 +147,7 @@ const PageInsights = ({ pageId, pageName, accessToken, setShowPageInsights }) =>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:max-w-none">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Page Insights</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{pageName} Page Insights</h2>
             <p className="mt-4 text-lg leading-8 text-gray-300">
               Select the date range to view the custom insights
             </p>
@@ -182,7 +190,7 @@ PageInsights.propTypes = {
   pageId: PropTypes.string.isRequired,
   pageName: PropTypes.string.isRequired,
   accessToken: PropTypes.string.isRequired,
-  setShowPageInsights: PropTypes.bool.isRequired
+  setShowPageInsights: PropTypes.func.isRequired // Updated to be a function to correctly toggle visibility
 };
 
 export default PageInsights;

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import PageInsights from "./pageInsights";
+import Loader from "../../utils/loader";
 
 const FacebookUserData = ({ accessToken, pages }) => {
   const [userData, setUserData] = useState(null);
@@ -23,7 +24,7 @@ const FacebookUserData = ({ accessToken, pages }) => {
 
       try {
         const response = await fetch(
-          `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${accessToken}`
+          `https://graph.facebook.com/me?fields=id,name,email,picture.width(800).height(800)&access_token=${accessToken}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -43,7 +44,7 @@ const FacebookUserData = ({ accessToken, pages }) => {
   }
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
   if (showPageInsights){
     return(
