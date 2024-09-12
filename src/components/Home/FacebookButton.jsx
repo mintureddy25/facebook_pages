@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
-const configurationId = process.env.REACT_APP_FACEBOOK_APP_CONFIGURATION_ID;
-console.log('Environment Variables:', process.env);
-
 
 const FacebookLoginButton = () => {
   const [accessToken, setAccessToken] = useState(null);
   const navigate = useNavigate();
-  console.log(facebookAppId,configurationId,"mintu cong");
 
   useEffect(() => {
     const loadFacebookSDK = () => {
@@ -18,8 +13,10 @@ const FacebookLoginButton = () => {
       js.id = "facebook-jssdk";
       js.src = "https://connect.facebook.net/en_US/sdk.js";
       js.onload = () => {
+        console.log("Facebook SDK loaded successfully.");
+
         window.FB.init({
-          appId: facebookAppId,
+          appId: process.env.REACT_APP_FACEBOOK_APP_ID,
           cookie: true,
           xfbml: true,
           version: "v20.0",
@@ -30,6 +27,9 @@ const FacebookLoginButton = () => {
         window.FB.getLoginStatus((response) => {
           statusChangeCallback(response);
         });
+      };
+      js.onerror = (error) => {
+        console.error("Failed to load Facebook SDK:", error);
       };
 
       document.body.appendChild(js);
@@ -45,8 +45,10 @@ const FacebookLoginButton = () => {
 
   const statusChangeCallback = (response) => {
     if (response.status === "connected") {
+      console.log("User is logged in with accessToken:", response.authResponse.accessToken);
       setAccessToken(response.authResponse.accessToken);
     } else {
+      console.log("User is not logged in or not authorized.");
       setAccessToken(null);
     }
   };
@@ -77,7 +79,7 @@ const FacebookLoginButton = () => {
         data-use-continue-as="false"
         data-scope="public_profile,email,pages_show_list,pages_read_engagement"
         data-onlogin="checkLoginState();"
-        data-config-id={configurationId}
+        data-config-id={process.env.REACT_APP_FACEBOOK_APP_CONFIGURATION_ID}
       ></div>
     </div>
   );
